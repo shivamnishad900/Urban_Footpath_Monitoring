@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Report Obstruction | UrbanFootpath</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <!-- Leaflet Map CSS -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+
+    <style>
+
+        /* ==========================================
+           LOCATION MAP
+           ========================================== */
+
+        .report-map-section {
+            margin-top: 20px;
+        }
+
+        .report-map-section label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        #reportMap {
+            width: 100%;
+            height: 360px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 229, 160, 0.25);
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        .map-info {
+            margin-top: 10px;
+            padding: 12px 15px;
+            border-radius: 10px;
+            background: rgba(0, 229, 160, 0.08);
+            border: 1px solid rgba(0, 229, 160, 0.15);
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .map-info strong {
+            color: #00e5a0;
+        }
+
+        .coordinates-box {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .coordinate-item {
+            flex: 1;
+            min-width: 180px;
+            padding: 12px 15px;
+            border-radius: 10px;
+            background: rgba(25, 181, 254, 0.08);
+            border: 1px solid rgba(25, 181, 254, 0.15);
+        }
+
+        .coordinate-item span {
+            display: block;
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+
+        .coordinate-item strong {
+            color: #f8fafc;
+            font-size: 14px;
+        }
+
+        /* Location status */
+        #locationStatus {
+            margin-top: 10px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+
+            #reportMap {
+                height: 300px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ==========================================
+         NAVIGATION
+         ========================================== -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            🚶 UrbanFootpath
+        </div>
+
+        <div class="nav-links">
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="report.html">
+                Report Issue
+            </a>
+
+            <a href="track.html">
+                Track Report
+            </a>
+
+            <a href="analytics.html">
+                Analytics
+            </a>
+
+            <a href="admin.html">
+                Admin
+            </a>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- ==========================================
+         REPORT SECTION
+         ========================================== -->
+
+    <section class="report-section">
+
+        <div class="report-container">
+
+            <h1>
+                Report Footpath Obstruction
+            </h1>
+
+            <p class="report-intro">
+                Help improve urban pedestrian movement
+                by reporting a footpath obstruction.
+            </p>
+
+
+
+            <!-- ======================================
+                 REPORT FORM
+                 ====================================== -->
+
+            <form
+                id="reportForm"
+                enctype="multipart/form-data">
+
+
+                <!-- NAME -->
+
+                <div class="form-group">
+
+                    <label for="name">
+                        Full Name
+                    </label>
+
+                    <input
+    type="text"
+    id="name"
+    name="name"
+    placeholder="Enter your name"
+    minlength="2"
+    maxlength="50"
+    required>
+                </div>
+
+
+
+                <!-- MOBILE -->
+
+                <div class="form-group">
+
+                    <label for="mobile">
+                        Mobile Number
+                    </label>
+
+                    <input
+    type="tel"
+    id="mobile"
+    name="mobile"
+    placeholder="Enter mobile number"
+    minlength="10"
+    maxlength="10"
+    pattern="[6-9][0-9]{9}"
+    inputmode="numeric"
+    required>
+
+                </div>
+
+
+
+                <!-- ==================================
+                     LOCATION
+                     ================================== -->
+
+                <div class="form-group">
+
+                    <label for="location">
+                        Location
+                    </label>
+
+                    <input
+                        type="text"
+                        id="location"
+                        name="location"
+                        placeholder="Example: Mira Road"
+                        autocomplete="off"
+                        minlength="2"
+                        maxlength="150"
+                        required>
+
+
+                    <!-- CURRENT LOCATION BUTTON -->
+
+                    <div class="location-box">
+
+                        <button
+                            type="button"
+                            id="getLocationBtn"
+                            class="location-btn">
+
+                            📍 Use My Current Location
+
+                        </button>
+
+
+                        <p id="locationStatus">
+                            Location not captured yet.
+                        </p>
+
+                    </div>
+
+
+                    <!-- HIDDEN COORDINATES -->
+
+                    <input
+                        type="hidden"
+                        id="latitude"
+                        name="latitude">
+
+                    <input
+                        type="hidden"
+                        id="longitude"
+                        name="longitude">
+
+
+                    <!-- ==================================
+                         MAP
+                         ================================== -->
+
+                    <div class="report-map-section">
+
+                        <label>
+                            📍 Selected Location on Map
+                        </label>
+
+                        <div id="reportMap"></div>
+
+
+                        <div class="map-info">
+
+                            💡 Type an area name above.
+                            The map will automatically move
+                            to that location.
+
+                        </div>
+
+
+                        <!-- COORDINATES DISPLAY -->
+
+                        <div class="coordinates-box">
+
+                            <div class="coordinate-item">
+
+                                <span>
+                                    Latitude
+                                </span>
+
+                                <strong id="displayLatitude">
+                                    Not selected
+                                </strong>
+
+                            </div>
+
+
+                            <div class="coordinate-item">
+
+                                <span>
+                                    Longitude
+                                </span>
+
+                                <strong id="displayLongitude">
+                                    Not selected
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ==================================
+                     OBSTRUCTION TYPE
+                     ================================== -->
+
+                <div class="form-group">
+
+                    <label for="obstruction_type">
+                        Obstruction Type
+                    </label>
+
+                    <select
+                        id="obstruction_type"
+                        name="obstruction_type"
+                        required>
+
+                        <option value="">
+                            Select obstruction type
+                        </option>
+
+                        <option value="Illegal Parking">
+                            Illegal Parking
+                        </option>
+
+                        <option value="Street Vendor">
+                            Street Vendor
+                        </option>
+
+                        <option value="Garbage">
+                            Garbage
+                        </option>
+
+                        <option value="Construction Material">
+                            Construction Material
+                        </option>
+
+                        <option value="Damaged Footpath">
+                            Damaged Footpath
+                        </option>
+
+                        <option value="Encroachment">
+                            Encroachment
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- ==================================
+                     SEVERITY
+                     ================================== -->
+
+                <div class="form-group">
+
+                    <label for="severity">
+                        Severity
+                    </label>
+
+                    <select
+                        id="severity"
+                        name="severity"
+                        required>
+
+                        <option value="">
+                            Select severity
+                        </option>
+
+                        <option value="Low">
+                            Low
+                        </option>
+
+                        <option value="Medium">
+                            Medium
+                        </option>
+
+                        <option value="High">
+                            High
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- ==================================
+                     DESCRIPTION
+                     ================================== -->
+
+                <div class="form-group">
+
+                    <label for="description">
+                        Description
+                    </label>
+
+                    <textarea
+    id="description"
+    name="description"
+    rows="5"
+    placeholder="Describe the obstruction..."
+    minlength="10"
+    maxlength="500"
+    required></textarea>
+                </div>
+
+
+
+                <!-- ==================================
+                     PHOTO
+                     ================================== -->
+
+                <div class="form-group">
+
+                    <label for="photo">
+                        Upload Photo
+                    </label>
+
+                    <input
+                        type="file"
+                        id="photo"
+                        name="photo"
+                        accept="image/*">
+
+                </div>
+
+
+
+                <!-- ==================================
+                     SUBMIT
+                     ================================== -->
+
+                <button
+                    type="submit"
+                    class="submit-btn">
+
+                    📍 Submit Report
+
+                </button>
+
+
+
+                <!-- MESSAGE -->
+
+                <div id="message"></div>
+
+
+            </form>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ==========================================
+         FOOTER
+         ========================================== -->
+
+    <footer>
+
+        <p>
+            © 2026 Urban Footpath Monitoring
+            & Management System
+        </p>
+
+        <p>
+            Ideal Lab Project | Urban System – Q4
+        </p>
+
+    </footer>
+
+
+
+    <!-- ==========================================
+         LEAFLET JS
+         ========================================== -->
+
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+    </script>
+
+
+    <!-- YOUR EXISTING APP.JS -->
+
+    <script src="js/app.js"></script>
+
+
+
+    <!-- ==========================================
+         SMART LOCATION + MAP
+         ========================================== -->
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+
+                /* =================================
+                   AREA DATABASE
+                   ================================= */
+
+                const areaCoordinates = {
+
+                    "mira road": {
+                        latitude: 19.284167,
+                        longitude: 72.871111
+                    },
+
+                    "mira road east": {
+                        latitude: 19.285637,
+                        longitude: 72.869109
+                    },
+
+                    "bhayandar": {
+                        latitude: 19.290000,
+                        longitude: 72.850000
+                    },
+
+                    "bhayander": {
+                        latitude: 19.290000,
+                        longitude: 72.850000
+                    },
+
+                    "uttan": {
+                        latitude: 19.280000,
+                        longitude: 72.785000
+                    },
+
+                    "andheri": {
+                        latitude: 19.120232,
+                        longitude: 72.854502
+                    },
+
+                    "andheri east": {
+                        latitude: 19.113611,
+                        longitude: 72.871389
+                    },
+
+                    "andheri west": {
+                        latitude: 19.116949,
+                        longitude: 72.833519
+                    },
+
+                    "chakala": {
+                        latitude: 19.111388,
+                        longitude: 72.860833
+                    },
+
+                    "dn nagar": {
+                        latitude: 19.124085,
+                        longitude: 72.831373
+                    },
+
+                    "lokhandwala": {
+                        latitude: 19.130815,
+                        longitude: 72.829270
+                    },
+
+                    "marol": {
+                        latitude: 19.119219,
+                        longitude: 72.882743
+                    },
+
+                    "versova": {
+                        latitude: 19.120000,
+                        longitude: 72.820000
+                    },
+
+                    "juhu": {
+                        latitude: 19.100000,
+                        longitude: 72.830000
+                    },
+
+                    "bandra": {
+                        latitude: 19.061590,
+                        longitude: 72.847999
+                    },
+
+                    "bandra east": {
+                        latitude: 19.061486,
+                        longitude: 72.848756
+                    },
+
+                    "bandra west": {
+                        latitude: 19.057574,
+                        longitude: 72.828419
+                    },
+
+                    "bandra kurla complex": {
+                        latitude: 19.067310,
+                        longitude: 72.865448
+                    },
+
+                    "bkc": {
+                        latitude: 19.067310,
+                        longitude: 72.865448
+                    },
+
+                    "khar": {
+                        latitude: 19.062742,
+                        longitude: 72.829396
+                    },
+
+                    "santacruz": {
+                        latitude: 19.081667,
+                        longitude: 72.841389
+                    },
+
+                    "santa cruz": {
+                        latitude: 19.081667,
+                        longitude: 72.841389
+                    },
+
+                    "vile parle": {
+                        latitude: 19.100000,
+                        longitude: 72.833333
+                    },
+
+                    "goregaon": {
+                        latitude: 19.160914,
+                        longitude: 72.846979
+                    },
+
+                    "malad": {
+                        latitude: 19.175000,
+                        longitude: 72.842000
+                    },
+
+                    "kandivali": {
+                        latitude: 19.210000,
+                        longitude: 72.842000
+                    },
+
+                    "borivali": {
+                        latitude: 19.234965,
+                        longitude: 72.859760
+                    },
+
+                    "borivali west": {
+                        latitude: 19.228501,
+                        longitude: 72.847595
+                    },
+
+                    "borivali east": {
+                        latitude: 19.226394,
+                        longitude: 72.862015
+                    },
+
+                    "dahisar": {
+                        latitude: 19.250069,
+                        longitude: 72.859347
+                    },
+
+                    "powai": {
+                        latitude: 19.118986,
+                        longitude: 72.911767
+                    },
+
+                    "ghatkopar": {
+                        latitude: 19.083858,
+                        longitude: 72.899694
+                    },
+
+                    "vikhroli": {
+                        latitude: 19.114921,
+                        longitude: 72.926710
+                    },
+
+                    "mulund": {
+                        latitude: 19.164857,
+                        longitude: 72.960820
+                    },
+
+                    "bhandup": {
+                        latitude: 19.150000,
+                        longitude: 72.933333
+                    },
+
+                    "kurla": {
+                        latitude: 19.071285,
+                        longitude: 72.883043
+                    },
+
+                    "chembur": {
+                        latitude: 19.051000,
+                        longitude: 72.894000
+                    },
+
+                    "sion": {
+                        latitude: 19.040000,
+                        longitude: 72.860000
+                    },
+
+                    "dharavi": {
+                        latitude: 19.049810,
+                        longitude: 72.863797
+                    },
+
+                    "dadar": {
+                        latitude: 19.016099,
+                        longitude: 72.842822
+                    },
+
+                    "mahim": {
+                        latitude: 19.035000,
+                        longitude: 72.840000
+                    },
+
+                    "prabhadevi": {
+                        latitude: 19.016600,
+                        longitude: 72.829500
+                    },
+
+                    "worli": {
+                        latitude: 19.000000,
+                        longitude: 72.815000
+                    },
+
+                    "lower parel": {
+                        latitude: 18.995278,
+                        longitude: 72.830000
+                    },
+
+                    "mumbai central": {
+                        latitude: 18.969700,
+                        longitude: 72.819400
+                    },
+
+                    "mahalaxmi": {
+                        latitude: 18.983333,
+                        longitude: 72.800000
+                    },
+
+                    "churchgate": {
+                        latitude: 18.930000,
+                        longitude: 72.820000
+                    },
+
+                    "marine drive": {
+                        latitude: 18.944000,
+                        longitude: 72.823000
+                    },
+
+                    "colaba": {
+                        latitude: 18.914509,
+                        longitude: 72.824083
+                    },
+
+                    "fort": {
+                        latitude: 18.933568,
+                        longitude: 72.838668
+                    },
+
+                    "nariman point": {
+                        latitude: 18.926000,
+                        longitude: 72.823000
+                    }
+
+                };
+
+
+                /* =================================
+                   HTML ELEMENTS
+                   ================================= */
+
+                const locationInput =
+                    document.getElementById("location");
+
+                const latitudeInput =
+                    document.getElementById("latitude");
+
+                const longitudeInput =
+                    document.getElementById("longitude");
+
+                const locationStatus =
+                    document.getElementById("locationStatus");
+
+                const displayLatitude =
+                    document.getElementById("displayLatitude");
+
+                const displayLongitude =
+                    document.getElementById("displayLongitude");
+
+
+                /* =================================
+                   CREATE MAP
+                   ================================= */
+
+                const map =
+                    L.map("reportMap").setView(
+                        [19.0760, 72.8777],
+                        11
+                    );
+
+
+                /* =================================
+                   MAP TILE
+                   ================================= */
+
+                L.tileLayer(
+                    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                    {
+                        maxZoom: 19,
+                        attribution:
+                            '&copy; OpenStreetMap contributors'
+                    }
+                ).addTo(map);
+
+
+                /* =================================
+                   MARKER
+                   ================================= */
+
+                let locationMarker = null;
+
+
+                /* =================================
+                   MOVE MAP FUNCTION
+                   ================================= */
+
+                function updateMap(
+                    latitude,
+                    longitude,
+                    areaName
+                ) {
+
+                    const position = [
+                        latitude,
+                        longitude
+                    ];
+
+
+                    // Remove old marker
+                    if (locationMarker) {
+                        map.removeLayer(locationMarker);
+                    }
+
+
+                    // Create new marker
+                    locationMarker =
+                        L.marker(position)
+                            .addTo(map);
+
+
+                    // Popup
+                    locationMarker
+                        .bindPopup(
+                            `
+                            <b>📍 Selected Location</b>
+                            <br>
+                            ${areaName}
+                            <br>
+                            <small>
+                            Lat: ${latitude}<br>
+                            Lng: ${longitude}
+                            </small>
+                            `
+                        )
+                        .openPopup();
+
+
+                    // Move map
+                    map.flyTo(
+                        position,
+                        15,
+                        {
+                            duration: 1.5
+                        }
+                    );
+
+                }
+
+
+                /* =================================
+                   LOCATION DETECTION
+                   ================================= */
+
+                if (locationInput) {
+
+                    locationInput.addEventListener(
+                        "input",
+                        function () {
+
+                            const enteredLocation =
+                                this.value
+                                    .trim()
+                                    .toLowerCase();
+
+
+                            // Empty
+                            if (!enteredLocation) {
+
+                                latitudeInput.value = "";
+                                longitudeInput.value = "";
+
+                                displayLatitude.textContent =
+                                    "Not selected";
+
+                                displayLongitude.textContent =
+                                    "Not selected";
+
+                                locationStatus.innerHTML =
+                                    "Location not captured yet.";
+
+                                locationStatus.style.color =
+                                    "#94a3b8";
+
+                                if (locationMarker) {
+
+                                    map.removeLayer(
+                                        locationMarker
+                                    );
+
+                                    locationMarker = null;
+                                }
+
+                                return;
+                            }
+
+
+                            /* ==========================
+                               SEARCH AREA
+                               ========================== */
+
+                            let matchedArea = null;
+                            let matchedName = "";
+
+
+                            for (
+                                const area in areaCoordinates
+                            ) {
+
+                                if (
+                                    enteredLocation === area ||
+                                    enteredLocation.includes(area)
+                                ) {
+
+                                    matchedArea =
+                                        areaCoordinates[area];
+
+                                    matchedName =
+                                        area;
+
+                                    break;
+                                }
+
+                            }
+
+
+                            /* ==========================
+                               FOUND
+                               ========================== */
+
+                            if (matchedArea) {
+
+                                const lat =
+                                    matchedArea.latitude;
+
+                                const lng =
+                                    matchedArea.longitude;
+
+
+                                // Hidden inputs
+                                latitudeInput.value =
+                                    lat;
+
+                                longitudeInput.value =
+                                    lng;
+
+
+                                // Display coordinates
+                                displayLatitude.textContent =
+                                    lat;
+
+                                displayLongitude.textContent =
+                                    lng;
+
+
+                                // Status
+                                locationStatus.innerHTML = `
+                                    ✅ <strong>
+                                    Location Detected
+                                    </strong>
+                                    <br>
+                                    📍 Area: ${matchedName}
+                                `;
+
+                                locationStatus.style.color =
+                                    "#00e5a0";
+
+
+                                // Update map
+                                updateMap(
+                                    lat,
+                                    lng,
+                                    matchedName
+                                );
+
+                            }
+
+
+                            /* ==========================
+                               NOT FOUND
+                               ========================== */
+
+                            else {
+
+                                latitudeInput.value = "";
+                                longitudeInput.value = "";
+
+                                displayLatitude.textContent =
+                                    "Not selected";
+
+                                displayLongitude.textContent =
+                                    "Not selected";
+
+                                locationStatus.innerHTML = `
+                                    ⚠️ Area not found.
+                                    <br>
+                                    Try: Mira Road, Bhayandar,
+                                    Andheri, Borivali
+                                `;
+
+                                locationStatus.style.color =
+                                    "#f59e0b";
+
+                            }
+
+                        }
+                    );
+
+                }
+
+
+                /* =================================
+                   CURRENT LOCATION BUTTON
+                   ================================= */
+
+                const getLocationBtn =
+                    document.getElementById(
+                        "getLocationBtn"
+                    );
+
+
+                if (getLocationBtn) {
+
+                    getLocationBtn.addEventListener(
+                        "click",
+                        function () {
+
+                            if (
+                                !navigator.geolocation
+                            ) {
+
+                                locationStatus.innerHTML =
+                                    "❌ Geolocation is not supported.";
+
+                                return;
+                            }
+
+
+                            locationStatus.innerHTML =
+                                "📍 Getting your current location...";
+
+
+                            navigator.geolocation.getCurrentPosition(
+
+                                function (position) {
+
+                                    const lat =
+                                        position.coords.latitude;
+
+                                    const lng =
+                                        position.coords.longitude;
+
+
+                                    latitudeInput.value =
+                                        lat;
+
+                                    longitudeInput.value =
+                                        lng;
+
+
+                                    displayLatitude.textContent =
+                                        lat.toFixed(6);
+
+                                    displayLongitude.textContent =
+                                        lng.toFixed(6);
+
+
+                                    locationStatus.innerHTML =
+                                        `
+                                        ✅ <strong>
+                                        Current Location Detected
+                                        </strong>
+                                        `;
+
+                                    locationStatus.style.color =
+                                        "#00e5a0";
+
+
+                                    updateMap(
+                                        lat,
+                                        lng,
+                                        "Current Location"
+                                    );
+
+                                },
+
+                                function () {
+
+                                    locationStatus.innerHTML =
+                                        `
+                                        ⚠️ Current GPS location
+                                        unavailable.
+                                        <br>
+                                        Please enter an area name
+                                        manually.
+                                        `;
+
+                                    locationStatus.style.color =
+                                        "#f59e0b";
+
+                                },
+
+                                {
+                                    enableHighAccuracy: true,
+                                    timeout: 10000,
+                                    maximumAge: 0
+                                }
+
+                            );
+
+                        }
+                    );
+
+                }
+
+            }
+
+        );
+
+    </script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,2591 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard | UrbanFootpath</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* =====================================================
+           ADMIN PAGE
+           ===================================================== */
+
+        .admin-page {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 10% 10%, rgba(0, 255, 170, 0.08), transparent 30%),
+                radial-gradient(circle at 90% 20%, rgba(0, 180, 255, 0.08), transparent 30%),
+                #07110f;
+            color: #fff;
+            padding-bottom: 60px;
+        }
+
+        /* ---------- AUTH SECTION ---------- */
+
+        .admin-auth-section {
+            min-height: calc(100vh - 90px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 70px 20px;
+        }
+
+        .admin-auth-card {
+            width: 100%;
+            max-width: 460px;
+            padding: 40px;
+            border-radius: 24px;
+            background: rgba(13, 27, 24, 0.94);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(18px);
+        }
+
+        .admin-auth-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 34px;
+            background: rgba(0, 255, 170, 0.10);
+            border: 1px solid rgba(0, 255, 170, 0.25);
+        }
+
+        .admin-auth-card h1 {
+            text-align: center;
+            margin: 0 0 10px;
+            font-size: 32px;
+        }
+
+        .admin-auth-card .auth-description {
+            text-align: center;
+            color: #9eaca8;
+            margin-bottom: 30px;
+        }
+
+        .admin-form-group {
+            margin-bottom: 18px;
+        }
+
+        .admin-form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .admin-form-group input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.055);
+            color: #fff;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .admin-form-group input:focus {
+            border-color: #00e6a0;
+            box-shadow: 0 0 0 3px rgba(0, 230, 160, 0.10);
+        }
+
+        .admin-form-group input::placeholder {
+            color: #71817c;
+        }
+
+        .admin-auth-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #00d995, #00a878);
+            color: #00130d;
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: 0.25s;
+        }
+
+        .admin-auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 220, 150, 0.20);
+        }
+
+        .admin-auth-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 22px;
+            color: #9eaca8;
+            font-size: 14px;
+        }
+
+        .auth-switch a {
+            color: #00e6a0;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+
+        .message-box {
+            margin-top: 18px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .message-box.success {
+            display: block;
+            background: rgba(0, 220, 150, 0.10);
+            border: 1px solid rgba(0, 220, 150, 0.25);
+            color: #5dffc5;
+        }
+
+        .message-box.error {
+            display: block;
+            background: rgba(255, 70, 70, 0.10);
+            border: 1px solid rgba(255, 70, 70, 0.25);
+            color: #ff8e8e;
+        }
+
+        /* ---------- DASHBOARD ---------- */
+
+        .admin-dashboard {
+            display: none;
+            padding: 45px 5%;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-header h1 {
+            margin: 0 0 8px;
+            font-size: 38px;
+        }
+
+        .dashboard-header p {
+            margin: 0;
+            color: #93a39e;
+        }
+
+        .admin-user {
+            color: #00e6a0;
+            font-weight: 700;
+        }
+
+        .dashboard-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .dashboard-btn {
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+            padding: 11px 17px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .dashboard-btn:hover {
+            background: rgba(255, 255, 255, 0.10);
+        }
+
+        .logout-btn {
+            border: 1px solid rgba(255, 80, 80, 0.25);
+            background: rgba(255, 60, 60, 0.08);
+            color: #ff9696;
+        }
+
+        /* ---------- STAT CARDS ---------- */
+
+        .admin-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .admin-stat-card {
+            padding: 24px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.045);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-stat-card::after {
+            content: "";
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            right: -40px;
+            bottom: -50px;
+            background: rgba(0, 230, 160, 0.10);
+            border-radius: 50%;
+        }
+
+        .stat-icon {
+            font-size: 26px;
+            margin-bottom: 14px;
+        }
+
+        .admin-stat-card h3 {
+            margin: 0 0 8px;
+            color: #9eaca8;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .stat-number {
+            font-size: 38px;
+            font-weight: 900;
+        }
+
+        /* ---------- ANALYSIS ---------- */
+
+        .admin-card {
+            background: rgba(255, 255, 255, 0.045);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .admin-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .admin-card h2 {
+            margin: 0;
+            font-size: 23px;
+        }
+
+        .admin-card-subtitle {
+            color: #899893;
+            margin: 6px 0 0;
+            font-size: 14px;
+        }
+
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .pattern-box {
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .pattern-box span {
+            color: #8c9c96;
+            font-size: 13px;
+        }
+
+        .pattern-box strong {
+            display: block;
+            margin-top: 9px;
+            font-size: 18px;
+            color: #00e6a0;
+            word-break: break-word;
+        }
+
+        /* ---------- REPORT TABLE ---------- */
+
+        .reports-tools {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            min-width: 240px;
+            padding: 11px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            outline: none;
+        }
+
+        .search-box:focus {
+            border-color: #00e6a0;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+
+        .admin-table th {
+            text-align: left;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #9aa9a4;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .admin-table td {
+            padding: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        .admin-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.025);
+        }
+
+        .report-id {
+            color: #00e6a0;
+            font-weight: 800;
+        }
+
+        .severity {
+            font-weight: 800;
+        }
+
+        .severity.high,
+        .severity.critical {
+            color: #ff7777;
+        }
+
+        .severity.medium {
+            color: #ffc766;
+        }
+
+        .severity.low {
+            color: #62e5a9;
+        }
+
+        .status-select {
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: #12201d;
+            color: #fff;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .status-select:focus {
+            border-color: #00e6a0;
+        }
+
+        .update-btn {
+            margin-left: 7px;
+            padding: 8px 11px;
+            border: none;
+            border-radius: 8px;
+            background: #00c98d;
+            color: #00130d;
+            cursor: pointer;
+            font-weight: 800;
+        }
+
+        .update-btn:hover {
+            background: #00e6a0;
+        }
+
+        .view-btn {
+            padding: 8px 11px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #87958f;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #00e6a0;
+        }
+
+        /* ---------- MODAL ---------- */
+
+        .report-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.75);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            width: 100%;
+            max-width: 650px;
+            max-height: 85vh;
+            overflow-y: auto;
+            background: #0c1b18;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 28px;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 18px;
+            background: none;
+            border: none;
+            color: #aaa;
+            font-size: 25px;
+            cursor: pointer;
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+            padding-right: 30px;
+        }
+
+        .detail-row {
+            padding: 13px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .detail-row strong {
+            color: #8d9c97;
+            display: inline-block;
+            min-width: 130px;
+        }
+
+        .report-photo {
+            width: 100%;
+            max-height: 350px;
+            object-fit: contain;
+            border-radius: 12px;
+            margin-top: 15px;
+            background: #050a09;
+        }
+
+        /* ---------- FOOTER ---------- */
+
+        .admin-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 25px 20px;
+            text-align: center;
+            color: #75847f;
+            background: #050b09;
+        }
+
+        .admin-footer p {
+            margin: 5px;
+        }
+
+        /* ---------- RESPONSIVE ---------- */
+
+        @media (max-width: 1000px) {
+            .admin-stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .pattern-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .admin-dashboard {
+                padding: 30px 15px;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .dashboard-header h1 {
+                font-size: 30px;
+            }
+
+            .admin-stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-auth-card {
+                padding: 28px 20px;
+            }
+
+            .admin-card {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <!-- =====================================================
+         NAVBAR
+         ===================================================== -->
+
+    <nav class="navbar advanced-navbar">
+
+        <a href="index.html" class="advanced-logo">
+            <span class="logo-icon">🚶</span>
+
+            <span>
+                <strong>UrbanFootpath</strong>
+                <small>Smart City Monitoring</small>
+            </span>
+        </a>
+
+        <div class="nav-links">
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="report.html">
+                Report Issue
+            </a>
+
+            <a href="track.html">
+                Track Report
+            </a>
+
+            <a href="analytics.html">
+                Analytics
+            </a>
+
+            <a href="admin.html" class="active">
+                Admin
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <main class="admin-page">
+
+
+        <!-- =================================================
+             LOGIN / SIGNUP
+             ================================================= -->
+
+        <section id="adminAuth" class="admin-auth-section">
+
+            <div class="admin-auth-card">
+
+                <div class="admin-auth-icon">
+                    🔐
+                </div>
+
+
+                <!-- ================= LOGIN ================= -->
+
+                <div id="loginView">
+
+                    <h1>Admin Login</h1>
+
+                    <p class="auth-description">
+                        Login to manage UrbanFootpath reports.
+                    </p>
+
+
+                    <form id="adminLoginForm">
+
+                        <div class="admin-form-group">
+
+                            <label for="loginUsername">
+                                Username
+                            </label>
+
+                            <input
+                                type="text"
+                                id="loginUsername"
+                                placeholder="Enter admin username"
+                                autocomplete="username"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="admin-form-group">
+
+                            <label for="loginPassword">
+                                Password
+                            </label>
+
+                            <input
+                                type="password"
+                                id="loginPassword"
+                                placeholder="Enter password"
+                                autocomplete="current-password"
+                                required
+                            >
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            id="loginBtn"
+                            class="admin-auth-btn"
+                        >
+                            🔐 Login
+                        </button>
+
+
+                        <div
+                            id="loginMessage"
+                            class="message-box"
+                        ></div>
+
+
+                    </form>
+
+
+                    <div class="auth-switch">
+
+                        Don't have an admin account?
+
+                        <a
+                            href="#"
+                            id="showSignup"
+                        >
+                            Create Account
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================= SIGNUP ================= -->
+
+                <div
+                    id="signupView"
+                    style="display:none;"
+                >
+
+                    <h1>Create Admin Account</h1>
+
+                    <p class="auth-description">
+                        Create a new administrator account.
+                    </p>
+
+
+                    <form id="adminSignupForm">
+
+
+                        <div class="admin-form-group">
+
+                            <label for="fullName">
+                                Full Name
+                            </label>
+
+                            <input
+                                type="text"
+                                id="fullName"
+                                placeholder="Enter full name"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="admin-form-group">
+
+                            <label for="signupEmail">
+                                Email
+                            </label>
+
+                            <input
+                                type="email"
+                                id="signupEmail"
+                                placeholder="Enter email address"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="admin-form-group">
+
+                            <label for="signupUsername">
+                                Username
+                            </label>
+
+                            <input
+                                type="text"
+                                id="signupUsername"
+                                placeholder="Choose username"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="admin-form-group">
+
+                            <label for="signupPassword">
+                                Password
+                            </label>
+
+                            <input
+                                type="password"
+                                id="signupPassword"
+                                placeholder="Create password"
+                                required
+                            >
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            id="signupBtn"
+                            class="admin-auth-btn"
+                        >
+                            📝 Create Account
+                        </button>
+
+
+                        <div
+                            id="signupMessage"
+                            class="message-box"
+                        ></div>
+
+
+                    </form>
+
+
+                    <div class="auth-switch">
+
+                        Already have an account?
+
+                        <a
+                            href="#"
+                            id="showLogin"
+                        >
+                            Login
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             ADMIN DASHBOARD
+             ================================================= -->
+
+        <section
+            id="adminDashboard"
+            class="admin-dashboard"
+        >
+
+            <div class="dashboard-container">
+
+
+                <!-- HEADER -->
+
+                <div class="dashboard-header">
+
+                    <div>
+
+                        <h1>
+                            Admin Dashboard
+                        </h1>
+
+                        <p>
+                            Urban Footpath Obstruction Management
+                            <span
+                                id="adminUserName"
+                                class="admin-user"
+                            ></span>
+                        </p>
+
+                    </div>
+
+
+                    <div class="dashboard-actions">
+
+                        <button
+                            class="dashboard-btn"
+                            onclick="loadDashboard()"
+                        >
+                            🔄 Refresh
+                        </button>
+
+                        <button
+                            id="logoutBtn"
+                            class="dashboard-btn logout-btn"
+                        >
+                            🚪 Logout
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- STATISTICS -->
+
+                <div class="admin-stats-grid">
+
+
+                    <div class="admin-stat-card">
+
+                        <div class="stat-icon">
+                            📋
+                        </div>
+
+                        <h3>
+                            Total Reports
+                        </h3>
+
+                        <div
+                            id="totalReports"
+                            class="stat-number"
+                        >
+                            0
+                        </div>
+
+                    </div>
+
+
+                    <div class="admin-stat-card">
+
+                        <div class="stat-icon">
+                            ⏳
+                        </div>
+
+                        <h3>
+                            Pending
+                        </h3>
+
+                        <div
+                            id="pendingReports"
+                            class="stat-number"
+                        >
+                            0
+                        </div>
+
+                    </div>
+
+
+                    <div class="admin-stat-card">
+
+                        <div class="stat-icon">
+                            🔧
+                        </div>
+
+                        <h3>
+                            In Progress
+                        </h3>
+
+                        <div
+                            id="progressReports"
+                            class="stat-number"
+                        >
+                            0
+                        </div>
+
+                    </div>
+
+
+                    <div class="admin-stat-card">
+
+                        <div class="stat-icon">
+                            ✅
+                        </div>
+
+                        <h3>
+                            Resolved
+                        </h3>
+
+                        <div
+                            id="resolvedReports"
+                            class="stat-number"
+                        >
+                            0
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- PATTERN ANALYSIS -->
+
+                <div class="admin-card">
+
+                    <div class="admin-card-header">
+
+                        <div>
+
+                            <h2>
+                                📊 Operational Pattern Analysis
+                            </h2>
+
+                            <p class="admin-card-subtitle">
+                                Identify recurring footpath problems
+                                from submitted reports.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="pattern-grid">
+
+
+                        <div class="pattern-box">
+
+                            <span>
+                                Most Reported Obstruction
+                            </span>
+
+                            <strong id="topObstruction">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="pattern-box">
+
+                            <span>
+                                Highest Severity
+                            </span>
+
+                            <strong id="topSeverity">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="pattern-box">
+
+                            <span>
+                                Most Reported Location
+                            </span>
+
+                            <strong id="topLocation">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ALL REPORTS -->
+
+                <div class="admin-card">
+
+                    <div class="admin-card-header">
+
+                        <div>
+
+                            <h2>
+                                📋 All Reports
+                            </h2>
+
+                            <p class="admin-card-subtitle">
+                                View and manage all citizen reports.
+                            </p>
+
+                        </div>
+
+
+                        <div class="reports-tools">
+
+                            <input
+                                type="text"
+                                id="reportSearch"
+                                class="search-box"
+                                placeholder="Search reports..."
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="table-wrapper">
+
+                        <table class="admin-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        ID
+                                    </th>
+
+                                    <th>
+                                        Name
+                                    </th>
+
+                                    <th>
+                                        Location
+                                    </th>
+
+                                    <th>
+                                        Obstruction
+                                    </th>
+
+                                    <th>
+                                        Severity
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                    <th>
+                                        Action
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody id="reportsTable">
+
+                                <tr>
+
+                                    <td
+                                        colspan="7"
+                                        class="loading"
+                                    >
+                                        Loading reports...
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         REPORT DETAILS MODAL
+         ===================================================== -->
+
+    <div
+        id="reportModal"
+        class="report-modal"
+    >
+
+        <div class="modal-content">
+
+            <button
+                class="modal-close"
+                onclick="closeReportModal()"
+            >
+                ×
+            </button>
+
+            <h2>
+                Report Details
+            </h2>
+
+            <div id="reportDetails"></div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="admin-footer">
+
+        <p>
+            © 2026 Urban Footpath Monitoring & Management System
+        </p>
+
+        <p>
+            Ideal Lab Project | Urban System – Q4
+        </p>
+
+    </footer>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
+    <script src="js/app.js"></script>
+
+
+    <script>
+
+        /* =====================================================
+           GLOBAL DATA
+           ===================================================== */
+
+        let allReports = [];
+
+
+
+        /* =====================================================
+           ELEMENTS
+           ===================================================== */
+
+        const adminAuth =
+            document.getElementById("adminAuth");
+
+        const adminDashboard =
+            document.getElementById("adminDashboard");
+
+        const loginView =
+            document.getElementById("loginView");
+
+        const signupView =
+            document.getElementById("signupView");
+
+
+
+        /* =====================================================
+           MESSAGE FUNCTION
+           ===================================================== */
+
+        function showMessage(elementId, message, type) {
+
+            const element =
+                document.getElementById(elementId);
+
+            element.textContent = message;
+
+            element.className =
+                "message-box " + type;
+
+        }
+
+
+
+        /* =====================================================
+           LOGIN / SIGNUP VIEW SWITCH
+           ===================================================== */
+
+        document
+            .getElementById("showSignup")
+            .addEventListener("click", function (event) {
+
+                event.preventDefault();
+
+                loginView.style.display = "none";
+
+                signupView.style.display = "block";
+
+            });
+
+
+        document
+            .getElementById("showLogin")
+            .addEventListener("click", function (event) {
+
+                event.preventDefault();
+
+                signupView.style.display = "none";
+
+                loginView.style.display = "block";
+
+            });
+
+
+
+        /* =====================================================
+           ADMIN LOGIN
+           ===================================================== */
+
+        document
+            .getElementById("adminLoginForm")
+            .addEventListener("submit", async function (event) {
+
+                event.preventDefault();
+
+
+                const username =
+                    document
+                        .getElementById("loginUsername")
+                        .value
+                        .trim();
+
+
+                const password =
+                    document
+                        .getElementById("loginPassword")
+                        .value;
+
+
+                const loginBtn =
+                    document.getElementById("loginBtn");
+
+
+                if (!username || !password) {
+
+                    showMessage(
+                        "loginMessage",
+                        "Please enter username and password.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                loginBtn.disabled = true;
+
+                loginBtn.textContent =
+                    "⏳ Logging in...";
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/admin/login",
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body: JSON.stringify({
+                                    username: username,
+                                    password: password
+                                })
+                            }
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    if (!response.ok || !data.success) {
+
+                        throw new Error(
+                            data.message ||
+                            "Invalid username or password."
+                        );
+
+                    }
+
+
+                    /* SAVE ADMIN SESSION */
+
+                    localStorage.setItem(
+                        "admin_id",
+                        data.admin.id
+                    );
+
+                    localStorage.setItem(
+                        "admin_username",
+                        data.admin.username
+                    );
+
+
+                    document
+                        .getElementById("loginPassword")
+                        .value = "";
+
+
+                    showDashboard(
+                        data.admin.username
+                    );
+
+
+                } catch (error) {
+
+                    console.error(
+                        "Admin login error:",
+                        error
+                    );
+
+
+                    showMessage(
+                        "loginMessage",
+                        "❌ " + error.message,
+                        "error"
+                    );
+
+                } finally {
+
+                    loginBtn.disabled = false;
+
+                    loginBtn.textContent =
+                        "🔐 Login";
+
+                }
+
+            });
+
+
+
+        /* =====================================================
+           ADMIN SIGNUP
+           ===================================================== */
+
+        document
+            .getElementById("adminSignupForm")
+            .addEventListener("submit", async function (event) {
+
+                event.preventDefault();
+
+
+                const full_name =
+                    document
+                        .getElementById("fullName")
+                        .value
+                        .trim();
+
+
+                const email =
+                    document
+                        .getElementById("signupEmail")
+                        .value
+                        .trim();
+
+
+                const username =
+                    document
+                        .getElementById("signupUsername")
+                        .value
+                        .trim();
+
+
+                const password =
+                    document
+                        .getElementById("signupPassword")
+                        .value;
+
+
+                const signupBtn =
+                    document.getElementById("signupBtn");
+
+
+                signupBtn.disabled = true;
+
+                signupBtn.textContent =
+                    "⏳ Creating...";
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/admin/signup",
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body: JSON.stringify({
+
+                                    full_name:
+                                        full_name,
+
+                                    email:
+                                        email,
+
+                                    username:
+                                        username,
+
+                                    password:
+                                        password
+
+                                })
+                            }
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    if (!response.ok || !data.success) {
+
+                        throw new Error(
+                            data.message ||
+                            "Failed to create account."
+                        );
+
+                    }
+
+
+                    showMessage(
+                        "signupMessage",
+                        "✅ Account created successfully! Please login.",
+                        "success"
+                    );
+
+
+                    document
+                        .getElementById("adminSignupForm")
+                        .reset();
+
+
+                    setTimeout(function () {
+
+                        signupView.style.display =
+                            "none";
+
+                        loginView.style.display =
+                            "block";
+
+                        document
+                            .getElementById("loginUsername")
+                            .value = username;
+
+                        document
+                            .getElementById("loginUsername")
+                            .focus();
+
+                    }, 1200);
+
+
+                } catch (error) {
+
+                    console.error(
+                        "Signup error:",
+                        error
+                    );
+
+
+                    showMessage(
+                        "signupMessage",
+                        "❌ " + error.message,
+                        "error"
+                    );
+
+                } finally {
+
+                    signupBtn.disabled = false;
+
+                    signupBtn.textContent =
+                        "📝 Create Account";
+
+                }
+
+            });
+
+
+
+        /* =====================================================
+           SHOW DASHBOARD
+           ===================================================== */
+
+        function showDashboard(username) {
+
+            adminAuth.style.display =
+                "none";
+
+
+            adminDashboard.style.display =
+                "block";
+
+
+            document
+                .getElementById("adminUserName")
+                .textContent =
+                " | Welcome, " + username;
+
+
+            loadDashboard();
+
+        }
+
+
+
+        /* =====================================================
+           LOAD ADMIN DASHBOARD
+           ===================================================== */
+
+        async function loadDashboard() {
+
+            const table =
+                document.getElementById("reportsTable");
+
+
+            table.innerHTML = `
+
+                <tr>
+
+                    <td colspan="7" class="loading">
+
+                        ⏳ Loading reports...
+
+                    </td>
+
+                </tr>
+
+            `;
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/admin/reports"
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok || !data.success) {
+
+                    throw new Error(
+                        data.message ||
+                        "Unable to fetch reports."
+                    );
+
+                }
+
+
+                allReports =
+                    data.reports || [];
+
+
+                /* ================= STATS ================= */
+
+                const stats =
+                    data.stats || {};
+
+
+                document
+                    .getElementById("totalReports")
+                    .textContent =
+                    stats.total || 0;
+
+
+                document
+                    .getElementById("pendingReports")
+                    .textContent =
+                    stats.pending || 0;
+
+
+                document
+                    .getElementById("progressReports")
+                    .textContent =
+                    stats.inProgress || 0;
+
+
+                document
+                    .getElementById("resolvedReports")
+                    .textContent =
+                    stats.resolved || 0;
+
+
+                /* ================= ANALYSIS ================= */
+
+                calculatePatterns();
+
+
+                /* ================= TABLE ================= */
+
+                renderReports(allReports);
+
+
+            } catch (error) {
+
+                console.error(
+                    "Dashboard error:",
+                    error
+                );
+
+
+                table.innerHTML = `
+
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            class="empty-state"
+                        >
+
+                            ❌ ${escapeHtml(error.message)}
+
+                            <br><br>
+
+                            <button
+                                class="dashboard-btn"
+                                onclick="loadDashboard()"
+                            >
+                                🔄 Try Again
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+
+        }
+
+
+
+        /* =====================================================
+           CALCULATE PATTERNS
+           ===================================================== */
+
+        function calculatePatterns() {
+
+            if (!allReports.length) {
+
+                document
+                    .getElementById("topObstruction")
+                    .textContent = "-";
+
+                document
+                    .getElementById("topSeverity")
+                    .textContent = "-";
+
+                document
+                    .getElementById("topLocation")
+                    .textContent = "-";
+
+                return;
+
+            }
+
+
+            /* ================= OBSTRUCTION ================= */
+
+            const obstructionCount = {};
+
+
+            allReports.forEach(function (report) {
+
+                const type =
+                    report.obstruction_type ||
+                    "Unknown";
+
+
+                obstructionCount[type] =
+                    (obstructionCount[type] || 0) + 1;
+
+            });
+
+
+            const topObstruction =
+                Object.entries(obstructionCount)
+                    .sort(function (a, b) {
+                        return b[1] - a[1];
+                    })[0];
+
+
+            document
+                .getElementById("topObstruction")
+                .textContent =
+                topObstruction
+                    ? `${topObstruction[0]} (${topObstruction[1]})`
+                    : "-";
+
+
+
+            /* ================= SEVERITY ================= */
+
+            const severityRank = {
+                "Critical": 4,
+                "High": 3,
+                "Medium": 2,
+                "Low": 1
+            };
+
+
+            let highestSeverity =
+                "Low";
+
+
+            allReports.forEach(function (report) {
+
+                const severity =
+                    report.severity || "";
+
+
+                if (
+                    (severityRank[severity] || 0) >
+                    (severityRank[highestSeverity] || 0)
+                ) {
+
+                    highestSeverity =
+                        severity;
+
+                }
+
+            });
+
+
+            document
+                .getElementById("topSeverity")
+                .textContent =
+                highestSeverity || "-";
+
+
+
+            /* ================= LOCATION ================= */
+
+            const locationCount = {};
+
+
+            allReports.forEach(function (report) {
+
+                const location =
+                    report.location ||
+                    "Unknown";
+
+
+                locationCount[location] =
+                    (locationCount[location] || 0) + 1;
+
+            });
+
+
+            const topLocation =
+                Object.entries(locationCount)
+                    .sort(function (a, b) {
+                        return b[1] - a[1];
+                    })[0];
+
+
+            document
+                .getElementById("topLocation")
+                .textContent =
+                topLocation
+                    ? `${topLocation[0]} (${topLocation[1]})`
+                    : "-";
+
+        }
+
+
+
+        /* =====================================================
+           RENDER REPORTS
+           ===================================================== */
+
+        function renderReports(reports) {
+
+            const table =
+                document.getElementById("reportsTable");
+
+
+            if (!reports.length) {
+
+                table.innerHTML = `
+
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            class="empty-state"
+                        >
+
+                            📭 No reports found.
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+                return;
+
+            }
+
+
+            table.innerHTML =
+                reports.map(function (report) {
+
+                    const severity =
+                        report.severity ||
+                        "Unknown";
+
+
+                    const status =
+                        report.status ||
+                        "Pending";
+
+
+                    return `
+
+                        <tr>
+
+                            <td>
+
+                                <span class="report-id">
+
+                                    #${escapeHtml(report.id)}
+
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                ${escapeHtml(
+                                    report.name ||
+                                    "-"
+                                )}
+
+                            </td>
+
+
+                            <td>
+
+                                ${escapeHtml(
+                                    report.location ||
+                                    "-"
+                                )}
+
+                            </td>
+
+
+                            <td>
+
+                                ${escapeHtml(
+                                    report.obstruction_type ||
+                                    "-"
+                                )}
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="severity ${severity.toLowerCase()}">
+
+                                    ${escapeHtml(
+                                        severity
+                                    )}
+
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <select
+                                    class="status-select"
+                                    id="status-${report.id}"
+                                >
+
+                                    <option
+                                        value="Pending"
+                                        ${status === "Pending" ? "selected" : ""}
+                                    >
+                                        Pending
+                                    </option>
+
+                                    <option
+                                        value="Verified"
+                                        ${status === "Verified" ? "selected" : ""}
+                                    >
+                                        Verified
+                                    </option>
+
+                                    <option
+                                        value="In Progress"
+                                        ${status === "In Progress" ? "selected" : ""}
+                                    >
+                                        In Progress
+                                    </option>
+
+                                    <option
+                                        value="Resolved"
+                                        ${status === "Resolved" ? "selected" : ""}
+                                    >
+                                        Resolved
+                                    </option>
+
+                                </select>
+
+                            </td>
+
+
+                            <td>
+
+                                <button
+                                    class="update-btn"
+                                    onclick="updateStatus(${report.id})"
+                                >
+                                    Update
+                                </button>
+
+
+                                <button
+                                    class="view-btn"
+                                    onclick="viewReport(${report.id})"
+                                >
+                                    View
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                }).join("");
+
+        }
+
+
+
+        /* =====================================================
+           UPDATE STATUS
+           ===================================================== */
+
+        async function updateStatus(reportId) {
+
+            const select =
+                document.getElementById(
+                    "status-" + reportId
+                );
+
+
+            const status =
+                select.value;
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `/api/admin/reports/${reportId}/status`,
+                        {
+                            method: "PUT",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+                                status: status
+                            })
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok || !data.success) {
+
+                    throw new Error(
+                        data.message ||
+                        "Unable to update status."
+                    );
+
+                }
+
+
+                alert(
+                    "✅ Report #" +
+                    reportId +
+                    " status updated to " +
+                    status
+                );
+
+
+                loadDashboard();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Status update error:",
+                    error
+                );
+
+
+                alert(
+                    "❌ " +
+                    error.message
+                );
+
+            }
+
+        }
+
+
+
+        /* =====================================================
+           VIEW REPORT
+           ===================================================== */
+
+        function viewReport(reportId) {
+
+            const report =
+                allReports.find(function (item) {
+
+                    return Number(item.id) ===
+                        Number(reportId);
+
+                });
+
+
+            if (!report) {
+
+                alert("Report not found.");
+
+                return;
+
+            }
+
+
+            const modal =
+                document.getElementById(
+                    "reportModal"
+                );
+
+
+            const details =
+                document.getElementById(
+                    "reportDetails"
+                );
+
+
+            let photoHtml = "";
+
+
+            if (report.photo) {
+
+                photoHtml = `
+
+                    <div class="detail-row">
+
+                        <strong>Photo:</strong>
+
+                        <br>
+
+                        <img
+                            class="report-photo"
+                            src="/uploads/${encodeURIComponent(report.photo)}"
+                            alt="Report Evidence"
+                            onerror="this.style.display='none'"
+                        >
+
+                    </div>
+
+                `;
+
+            }
+
+
+            details.innerHTML = `
+
+                <div class="detail-row">
+
+                    <strong>Report ID:</strong>
+
+                    #${escapeHtml(report.id)}
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <strong>Name:</strong>
+
+                    ${escapeHtml(
+                        report.name || "-"
+                    )}
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <strong>Mobile:</strong>
+
+                    ${escapeHtml(
+                        report.mobile || "-"
+                    )}
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <strong>Location:</strong>
+
+                    ${escapeHtml(
+                        report.location || "-"
+                    )}
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <strong>Obstruction:</strong>
+
+                    ${escapeHtml(
+                        report.obstruction_type || "-"
+                    )}
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <strong>Severity:</strong>
+
+                    ${escapeHtml(
+                        report.severity || "-"
+                    )}
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <strong>Status:</strong>
+
+                    ${escapeHtml(
+                        report.status || "-"
+                    )}
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <strong>Latitude:</strong>
+
+                    ${escapeHtml(
+                        report.latitude || "-"
+                    )}
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <strong>Longitude:</strong>
+
+                    ${escapeHtml(
+                        report.longitude || "-"
+                    )}
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <strong>Description:</strong>
+
+                    ${escapeHtml(
+                        report.description || "-"
+                    )}
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <strong>Created:</strong>
+
+                    ${escapeHtml(
+                        formatDate(report.created_at)
+                    )}
+
+                </div>
+
+
+                ${photoHtml}
+
+            `;
+
+
+            modal.style.display =
+                "flex";
+
+        }
+
+
+
+        /* =====================================================
+           CLOSE MODAL
+           ===================================================== */
+
+        function closeReportModal() {
+
+            document
+                .getElementById("reportModal")
+                .style.display = "none";
+
+        }
+
+
+        document
+            .getElementById("reportModal")
+            .addEventListener(
+                "click",
+                function (event) {
+
+                    if (
+                        event.target ===
+                        this
+                    ) {
+
+                        closeReportModal();
+
+                    }
+
+                }
+            );
+
+
+
+        /* =====================================================
+           SEARCH REPORTS
+           ===================================================== */
+
+        document
+            .getElementById("reportSearch")
+            .addEventListener(
+                "input",
+                function () {
+
+                    const query =
+                        this.value
+                            .trim()
+                            .toLowerCase();
+
+
+                    if (!query) {
+
+                        renderReports(
+                            allReports
+                        );
+
+                        return;
+
+                    }
+
+
+                    const filtered =
+                        allReports.filter(
+                            function (report) {
+
+                                return (
+
+                                    String(
+                                        report.id ||
+                                        ""
+                                    )
+                                        .toLowerCase()
+                                        .includes(query)
+
+                                    ||
+
+                                    String(
+                                        report.name ||
+                                        ""
+                                    )
+                                        .toLowerCase()
+                                        .includes(query)
+
+                                    ||
+
+                                    String(
+                                        report.location ||
+                                        ""
+                                    )
+                                        .toLowerCase()
+                                        .includes(query)
+
+                                    ||
+
+                                    String(
+                                        report.obstruction_type ||
+                                        ""
+                                    )
+                                        .toLowerCase()
+                                        .includes(query)
+
+                                    ||
+
+                                    String(
+                                        report.status ||
+                                        ""
+                                    )
+                                        .toLowerCase()
+                                        .includes(query)
+
+                                    ||
+
+                                    String(
+                                        report.severity ||
+                                        ""
+                                    )
+                                        .toLowerCase()
+                                        .includes(query)
+
+                                );
+
+                            }
+                        );
+
+
+                    renderReports(
+                        filtered
+                    );
+
+                }
+            );
+
+
+
+        /* =====================================================
+           LOGOUT
+           ===================================================== */
+
+        document
+            .getElementById("logoutBtn")
+            .addEventListener(
+                "click",
+                function () {
+
+                    localStorage.removeItem(
+                        "admin_id"
+                    );
+
+                    localStorage.removeItem(
+                        "admin_username"
+                    );
+
+
+                    allReports = [];
+
+
+                    adminDashboard.style.display =
+                        "none";
+
+
+                    adminAuth.style.display =
+                        "flex";
+
+
+                    loginView.style.display =
+                        "block";
+
+
+                    signupView.style.display =
+                        "none";
+
+
+                    document
+                        .getElementById("adminLoginForm")
+                        .reset();
+
+
+                    showMessage(
+                        "loginMessage",
+                        "You have been logged out.",
+                        "success"
+                    );
+
+                }
+            );
+
+
+
+        /* =====================================================
+           CHECK EXISTING LOGIN
+           ===================================================== */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                const adminUsername =
+                    localStorage.getItem(
+                        "admin_username"
+                    );
+
+
+                if (adminUsername) {
+
+                    showDashboard(
+                        adminUsername
+                    );
+
+                }
+
+            }
+        );
+
+
+
+        /* =====================================================
+           ESCAPE HTML
+           ===================================================== */
+
+        function escapeHtml(value) {
+
+            if (value === null ||
+                value === undefined) {
+
+                return "";
+
+            }
+
+
+            return String(value)
+
+                .replaceAll("&", "&amp;")
+
+                .replaceAll("<", "&lt;")
+
+                .replaceAll(">", "&gt;")
+
+                .replaceAll('"', "&quot;")
+
+                .replaceAll("'", "&#039;");
+
+        }
+
+
+
+        /* =====================================================
+           FORMAT DATE
+           ===================================================== */
+
+        function formatDate(dateValue) {
+
+            if (!dateValue) {
+
+                return "-";
+
+            }
+
+
+            const date =
+                new Date(dateValue);
+
+
+            if (isNaN(date.getTime())) {
+
+                return String(dateValue);
+
+            }
+
+
+            return date.toLocaleString(
+                "en-IN",
+                {
+                    dateStyle: "medium",
+                    timeStyle: "short"
+                }
+            );
+
+        }
+
+    </script>
+
+</body>
+
+</html>
